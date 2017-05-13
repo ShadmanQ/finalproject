@@ -2,20 +2,27 @@ var floor;
 var player;
 
 
-var noteblocks;
-
-var song;
+var bassBlocks;
+var midBlocks;
+var trebleBlocks;
+var easySong, medSong, hardSong;
 var thefft;
+
+var EnergyBarrier1;
+var EnergyBarrier2;
+var EnergyBarrier3;
 
 var theEndBarThing;
 var gameFont;
+var otherFont;
 
 var gameStart = false;
 
 function preload(){
-	song = loadSound("assets/mario.mp3");
+	hardsong = loadSound("assets/flames.mp3");
 	thefft = new p5.FFT;
 	gameFont = loadFont("assets/BadMofo.ttf");
+	otherFont = loadFont("assets/coolvetica rg.ttf");
 	//run_sprite_sheet = loadSpriteSheet("assets/run.png",280,340,10);
 	//run_animation = loadAnimation(run_sprite_sheet);	
 }
@@ -30,21 +37,21 @@ function setup() {
   //theEndBarThing.velocity.x = -10;
 
   floor = createSprite( width/2, height-50, width, 20);
-  floor.shapeColor = color(245,245,245);
+  floor.shapeColor = color(50);
 
 
 //sprites that represent the lines on sheet music
   line1 = createSprite(width/2,height-200,width,5);
-  line1.shapeColor = color(245,245,245);
+  line1.shapeColor = color(50);
 
   line2 = createSprite(width/2,height-350,width,5);
-  line2.shapeColor = color(245,245,245);
+  line2.shapeColor = color(50);
 
   line3 = createSprite(width/2,height-500,width,5);
-  line3.shapeColor = color(245,245,245);
+  line3.shapeColor = color(50);
 
   ceiling = createSprite(width/2,height-650,width, 20);
-  ceiling.shapeColor = color(245,245,245);
+  ceiling.shapeColor = color(50);
 
   player = createSprite();
   player.addAnimation("running","assets/run 1.png","assets/run 6.png");
@@ -63,9 +70,23 @@ if (!gameStart){
 	textSize(200);
 	textAlign(CENTER);
 	text("Rhythm Runner",width/2,height/2-200);
+	textSize(60);
+	textFont(otherFont);
+	text("Press A to start!",width/2,height/2-110);
+	textSize(30);
+	text("Right to run, Up to Jump",width/2,height/2-60);
+	if (keyIsDown(65)){
+		gameStart = true;
+	}
 }
 
 else{
+
+	floor.shapeColor=color(245,245,245);
+	ceiling.shapeColor=color(245,245,245);
+	line1.shapeColor=color(245,245,245);
+	line2.shapeColor=color(245,245,245);
+	line3.shapeColor=color(245,245,245);
   GameLogic();
 }
   drawSprites();
@@ -80,14 +101,15 @@ function GameLogic(){
 
 spectrum = thefft.analyze();
 
+player.velocity.x = -2.5;
 var bassEnergy = thefft.getEnergy('bass');
 var midsEnergy = thefft.getEnergy('mid');
 var trebleEnergy = thefft.getEnergy('treble');
 
 
  var spectR = map(spectrum[0],0,200,0,255);
- var spectG = map(spectrum[200],0,600,0,255);
- var spectB = map(spectrum[500],0,600,0,255);
+ var spectG = map(spectrum[200],0,300,0,255);
+ var spectB = map(spectrum[500],0,300,0,255);
 
  //this creates a really equalizer lookingthing in the background
  //for (var i = 0; i< spectrum.length; i++){
@@ -96,23 +118,32 @@ var trebleEnergy = thefft.getEnergy('treble');
     //rect(x, height, width / spectrum.length, h )
     //}
 
- if (bassEnergy > 95)
+ if (bassEnergy > 140)
  {
- 	thing = createSprite(600+spectrum[0],line1.position.y,20,20);
- 	thing.color = color(spectR,spectG,spectB);
+ 	thing = createSprite(width-100,line3.position.y,20,20);
+ 	thing.shapeColor = color(spectR,spectG,spectB);
  	thing.velocity.x = -5.0;
- 	noteblocks.add(thing);
+ 	thing.life = random(40,120);
  }
 
- if (noteblocks.length > 5){
- 	for (var i = 0; i < noteblocks.length; i++){
- 		if (noteblocks[i].position.x < 40)
- 		{
- 			noteblocks[i].remove()
- 		}
- 	}
- }
+if (midsEnergy > 120){
+	thing = thing = createSprite(width-100,line2.position.y,20,20);
+	thing.shapeColor = color(spectG,spectR,spectB);
+	thing.velocity.x = -5.0;
+	thing.life = random(40,120);
+}
+
+if (trebleEnergy > 100){
+	thing = thing = createSprite(width-100,line1.position.y,20,20);
+	thing.shapeColor = color(spectB,spectG,spectR);
+	thing.velocity.x = -5.0;
+	thing.life = random(40,120);
+}
+
  
+//theEndBarThing.velocity.x = -10;
+
+
  if (theEndBarThing.position.x < 0){
  	theEndBarThing.position.x = width+20;
  }
