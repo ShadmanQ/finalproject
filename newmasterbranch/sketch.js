@@ -5,7 +5,9 @@ var player;
 var bassBlocks;
 var midBlocks;
 var trebleBlocks;
-var easySong, medSong, hardSong;
+var easySong;
+var medSong;
+var hardSong;
 var thefft;
 
 var EnergyBarrier1;
@@ -20,6 +22,7 @@ var gameStart = false;
 
 function preload(){
 	hardsong = loadSound("assets/flames.mp3");
+	easySong = loadSound("assets/mario.mp3");
 	thefft = new p5.FFT;
 	gameFont = loadFont("assets/BadMofo.ttf");
 	otherFont = loadFont("assets/coolvetica rg.ttf");
@@ -94,9 +97,9 @@ else{
 
 
 function GameLogic(){
-	if (!song.isPlaying())
+	if (!easySong.isPlaying())
 	{	
-		song.play();
+		easySong.play();
 	}
 
 spectrum = thefft.analyze();
