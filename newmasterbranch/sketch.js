@@ -1,6 +1,10 @@
 var floor;
 var player;
 
+var startTime;
+
+var JUMP = -15.0;
+var GRAVITY = 25.0;
 
 var bassBlocks;
 var midBlocks;
@@ -32,7 +36,6 @@ function preload(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noteblocks = new Group();
   textFont(gameFont);
 
   theEndBarThing = createSprite(width-20, height/2+50,30,600);
@@ -42,6 +45,10 @@ function setup() {
   floor = createSprite( width/2, height-50, width, 20);
   floor.shapeColor = color(50);
 
+
+bassBlocks = new Group();
+midBlocks = new Group();
+trebleBlocks = new Group();
 
 //sprites that represent the lines on sheet music
   line1 = createSprite(width/2,height-200,width,5);
@@ -100,11 +107,14 @@ function GameLogic(){
 	if (!easySong.isPlaying())
 	{	
 		easySong.play();
-	}
+		startTime = millis();
 
+	}
+console.log(startTime);
 spectrum = thefft.analyze();
 
 player.velocity.x = -2.5;
+player.velocity.y=GRAVITY;
 var bassEnergy = thefft.getEnergy('bass');
 var midsEnergy = thefft.getEnergy('mid');
 var trebleEnergy = thefft.getEnergy('treble');
@@ -121,45 +131,50 @@ var trebleEnergy = thefft.getEnergy('treble');
     //rect(x, height, width / spectrum.length, h )
     //}
 
- if (bassEnergy > 140)
+ if (bassEnergy > 130)
  {
  	thing = createSprite(width-100,line3.position.y,20,20);
  	thing.shapeColor = color(spectR,spectG,spectB);
  	thing.velocity.x = -5.0;
- 	thing.life = random(40,120);
+ 	thing.life = 220;
+ 	bassBlocks.add(thing);
  }
 
-if (midsEnergy > 120){
+if (midsEnergy > 130){
 	thing = thing = createSprite(width-100,line2.position.y,20,20);
 	thing.shapeColor = color(spectG,spectR,spectB);
 	thing.velocity.x = -5.0;
-	thing.life = random(40,120);
+	thing.life = 220;
+	midBlocks.add(thing);
 }
 
 if (trebleEnergy > 100){
 	thing = thing = createSprite(width-100,line1.position.y,20,20);
 	thing.shapeColor = color(spectB,spectG,spectR);
 	thing.velocity.x = -5.0;
-	thing.life = random(40,120);
+	thing.life = 220;
+	trebleBlocks.add(thing);
 }
 
  
 //theEndBarThing.velocity.x = -10;
 
 
+player.collide(bassBlocks);
+player.collide(midBlocks);
+player.collide(trebleBlocks);
+player.collide(floor);
+
  if (theEndBarThing.position.x < 0){
  	theEndBarThing.position.x = width+20;
  }
 
 if (keyIsDown(RIGHT_ARROW)){
-	player.position.x +=5;
+	player.position.x +=7.5;
 }
 
 if (keyIsDown(UP_ARROW)){
-	player.position.y -=5;
+	player.velocity.y=JUMP;
 }
 
-if (keyIsDown(DOWN_ARROW)){
-	player.position.y +=5;
-}
 }
