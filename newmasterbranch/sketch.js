@@ -4,7 +4,7 @@ var player;
 var startTime;
 
 var JUMP = -15.0;
-var GRAVITY = 25.0;
+var GRAVITY = 20.0;
 
 var bassBlocks;
 var midBlocks;
@@ -67,7 +67,7 @@ trebleBlocks = new Group();
   player.addAnimation("running","assets/run 1.png","assets/run 6.png");
   //player.addAnimation("run",run_animation);
 
-  player.position.x = 50;
+  player.position.x = 200;
   player.position.y = floor.position.y-50;
 
 }
@@ -85,6 +85,8 @@ if (!gameStart){
 	text("Press A to start!",width/2,height/2-110);
 	textSize(30);
 	text("Right to run, Up to Jump",width/2,height/2-60);
+	textSize(25);
+	text("TO DO LIST\n1. Fix infinijump\n2. scoring mechanic\n3. end screens \n4. other levels\n5. overall ~aesthetic~ fixes",width/2,height/2);
 	if (keyIsDown(65)){
 		gameStart = true;
 	}
